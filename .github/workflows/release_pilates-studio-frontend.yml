@@ -9,6 +9,7 @@ on:
 jobs:
   build_and_package:
     runs-on: ubuntu-latest
+    environment: release
     steps:
       - uses: actions/checkout@v4
 
