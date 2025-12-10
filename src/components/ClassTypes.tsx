@@ -1,0 +1,125 @@
+import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Loader } from "lucide-react";
+import type { IClassType } from "@/interfaces";
+import { getAllClassTypes, createClassType, updateClassType, deleteClassType } from "@/services/apiService";
+import ClassTypeCard from "./ClassTypeCard";
+import ClassTypeAddModal from "./ClassTypeAddModal";
+import ClassTypeEditModal from "./ClassTypeEditModal";
+
+export default function ClassTypes() {
+	const queryClient = useQueryClient();
+	const [showAddModal, setShowAddModal] = useState(false);
+	const [editingId, setEditingId] = useState<number | null>(null);
+
+	// Fetch all class types
+	const {
+		data: classTypes = [],
+		isLoading,
+		error
+	} = useQuery({
+		queryKey: ["classTypes"],
+		queryFn: getAllClassTypes
+	});
+
+	const editingClassType = classTypes.find(ct => ct.id === editingId) || null;
+
+	// Delete mutation
+	const deleteMutation = useMutation({
+		mutationFn: deleteClassType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+		}
+	});
+
+	// Create mutation
+	const createMutation = useMutation({
+		mutationFn: createClassType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+			setShowAddModal(false);
+		}
+	});
+
+	// Update mutation
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }: { id: number; data: Omit<IClassType, "id"> }) => updateClassType(id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+			setEditingId(null);
+		}
+	});
+
+	const handleDelete = (id: number) => {
+		deleteMutation.mutate(id);
+	};
+
+	const handleAddSubmit = (data: Omit<IClassType, "id">) => {
+		createMutation.mutate(data);
+	};
+
+	const handleEditSubmit = (id: number, data: Omit<IClassType, "id">) => {
+		updateMutation.mutate({ id, data });
+	};
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="flex items-center gap-2">
+					<Loader size={24} className="animate-spin" />
+					<span>Loading class types...</span>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold mb-2">Error loading class types</h2>
+					<p className="text-gray-400">{error.message}</p>
+				</div>
+			</div>
+		);
+	}
+
+	return (
+		<div className="min-h-screen bg-[#282c34] text-white p-8">
+			<div className="flex items-start justify-between mb-8">
+				<div>
+					<h1 className="text-5xl font-bold mb-2">Class Types</h1>
+					<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
+				</div>
+				<button
+					onClick={() => setShowAddModal(true)}
+					className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
+				>
+					<Plus size={20} />
+					Add Class Type
+				</button>
+			</div>
+
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+				{classTypes.map(classType => (
+					<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
+				))}
+			</div>
+
+			<ClassTypeAddModal
+				isOpen={showAddModal}
+				onClose={() => setShowAddModal(false)}
+				onSubmit={handleAddSubmit}
+				isLoading={createMutation.isPending}
+			/>
+
+			<ClassTypeEditModal
+				isOpen={editingId !== null}
+				classType={editingClassType}
+				onClose={() => setEditingId(null)}
+				onSubmit={handleEditSubmit}
+				isLoading={updateMutation.isPending}
+			/>
+		</div>
+	);
+}
