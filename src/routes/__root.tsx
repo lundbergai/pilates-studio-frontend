@@ -1,11 +1,13 @@
 import { Outlet, createRootRoute } from '@tanstack/react-router'
-import Header from '../components/Header'
+import Navigation from '../components/Navigation'
 
 export const Route = createRootRoute({
   component: () => (
-    <>
-      <Header />
-      <Outlet />
-    </>
+    <div className="flex h-screen">
+      <Navigation />
+      <main className="flex-1 overflow-auto">
+        <Outlet />
+      </main>
+    </div>
   ),
 })
