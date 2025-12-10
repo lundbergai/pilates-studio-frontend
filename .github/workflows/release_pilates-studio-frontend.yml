@@ -9,7 +9,6 @@ on:
 jobs:
   build_and_package:
     runs-on: ubuntu-latest
-    environment: release
     steps:
       - uses: actions/checkout@v4
 
@@ -27,3 +26,8 @@ jobs:
         env:
           VITE_CLERK_PUBLISHABLE_KEY: ${{ vars.VITE_CLERK_PUBLISHABLE_KEY }}
         run: npm test
+
+      - name: Build
+        env:
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ vars.VITE_CLERK_PUBLISHABLE_KEY }}
+        run: npm run build
