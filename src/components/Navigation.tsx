@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Globe, Home, Network } from "lucide-react";
+import { Globe, Home, Network, BookOpen } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 
 export default function Navigation() {
@@ -24,6 +24,18 @@ export default function Navigation() {
 					>
 						<Home size={20} />
 						<span className="font-medium">Home</span>
+					</Link>
+
+					<Link
+						to="/classtypes"
+						className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2 whitespace-nowrap"
+						activeProps={{
+							className:
+								"flex items-center gap-3 p-3 rounded-lg bg-cyan-600 hover:bg-cyan-700 transition-colors mb-2 whitespace-nowrap"
+						}}
+					>
+						<BookOpen size={20} />
+						<span className="font-medium">Class Types</span>
 					</Link>
 
 					<Link

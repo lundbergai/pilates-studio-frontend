@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TanstackQueryRouteImport } from './routes/tanstack-query'
 import { Route as ClerkRouteImport } from './routes/clerk'
+import { Route as ClasstypesRouteImport } from './routes/classtypes'
 import { Route as IndexRouteImport } from './routes/index'
 
 const TanstackQueryRoute = TanstackQueryRouteImport.update({
@@ -23,6 +24,11 @@ const ClerkRoute = ClerkRouteImport.update({
   path: '/clerk',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ClasstypesRoute = ClasstypesRouteImport.update({
+  id: '/classtypes',
+  path: '/classtypes',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
   '/tanstack-query': typeof TanstackQueryRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
   '/tanstack-query': typeof TanstackQueryRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
   '/tanstack-query': typeof TanstackQueryRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/clerk' | '/tanstack-query'
+  fullPaths: '/' | '/classtypes' | '/clerk' | '/tanstack-query'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/clerk' | '/tanstack-query'
-  id: '__root__' | '/' | '/clerk' | '/tanstack-query'
+  to: '/' | '/classtypes' | '/clerk' | '/tanstack-query'
+  id: '__root__' | '/' | '/classtypes' | '/clerk' | '/tanstack-query'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ClasstypesRoute: typeof ClasstypesRoute
   ClerkRoute: typeof ClerkRoute
   TanstackQueryRoute: typeof TanstackQueryRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ClerkRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/classtypes': {
+      id: '/classtypes'
+      path: '/classtypes'
+      fullPath: '/classtypes'
+      preLoaderRoute: typeof ClasstypesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ClasstypesRoute: ClasstypesRoute,
   ClerkRoute: ClerkRoute,
   TanstackQueryRoute: TanstackQueryRoute,
 }

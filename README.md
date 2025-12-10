@@ -12,10 +12,11 @@ npm install
 
 ### Environment Variables
 
-Create a `.env.local` file in the root directory and add:
+Create a `.env` file in the root directory and add:
 
 ```
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key_here
+VITE_API_BASE_URL=https://mydomain/api
 ```
 
 Get your Clerk Publishable Key from [Clerk Dashboard](https://dashboard.clerk.com).
