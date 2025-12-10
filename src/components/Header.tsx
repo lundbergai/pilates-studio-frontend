@@ -1,9 +1,7 @@
 import { Link } from '@tanstack/react-router'
-
-import ClerkHeader from '../integrations/clerk/header-user.tsx'
-
 import { useState } from 'react'
 import { Globe, Home, Menu, Network, X } from 'lucide-react'
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/clerk-react'
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false)
@@ -30,9 +28,8 @@ export default function Header() {
       </header>
 
       <aside
-        className={`fixed top-0 left-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 left-0 h-full w-80 bg-gray-900 text-white shadow-2xl z-50 transform transition-transform duration-300 ease-in-out flex flex-col ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <div className="flex items-center justify-between p-4 border-b border-gray-700">
           <h2 className="text-xl font-bold">Navigation</h2>
@@ -91,7 +88,12 @@ export default function Header() {
         </nav>
 
         <div className="p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-2">
-          <ClerkHeader />
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <SignedOut>
+            <SignInButton />
+          </SignedOut>
         </div>
       </aside>
     </>
