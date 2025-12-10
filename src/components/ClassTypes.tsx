@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, Loader } from "lucide-react";
-import type { IClassType } from "@/interfaces";
-import { getAllClassTypes, createClassType, updateClassType, deleteClassType } from "@/services/apiService";
-import ClassTypeCard from "./ClassTypeCard";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Loader, Plus } from "lucide-react";
 import ClassTypeAddModal from "./ClassTypeAddModal";
+import ClassTypeCard from "./ClassTypeCard";
 import ClassTypeEditModal from "./ClassTypeEditModal";
+import type { IClassType } from "@/interfaces";
+import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
 
 export default function ClassTypes() {
 	const queryClient = useQueryClient();
