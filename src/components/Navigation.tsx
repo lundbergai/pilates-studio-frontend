@@ -27,7 +27,7 @@ export default function Navigation() {
           </Link>
 
           <Link
-            to="/demo/clerk"
+            to="/clerk"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2 whitespace-nowrap"
             activeProps={{
               className:
@@ -39,7 +39,7 @@ export default function Navigation() {
           </Link>
 
           <Link
-            to="/demo/tanstack-query"
+            to="/tanstack-query"
             className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2 whitespace-nowrap"
             activeProps={{
               className:
