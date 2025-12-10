@@ -1,13 +1,15 @@
 import { useState } from "react";
+import { Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 
 interface ClassTypeAddModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: (data: Omit<IClassType, "id">) => void;
+	isLoading?: boolean;
 }
 
-export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTypeAddModalProps) {
+export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading = false }: ClassTypeAddModalProps) {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -37,6 +39,7 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTy
 							onChange={e => setFormData({ ...formData, title: e.target.value })}
 							className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-600"
 							required
+							disabled={isLoading}
 						/>
 					</div>
 
@@ -48,6 +51,7 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTy
 							className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-600 resize-none"
 							rows={3}
 							required
+							disabled={isLoading}
 						/>
 					</div>
 
@@ -59,6 +63,7 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTy
 							onChange={e => setFormData({ ...formData, duration: parseInt(e.target.value) })}
 							className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-600"
 							required
+							disabled={isLoading}
 						/>
 					</div>
 
@@ -70,6 +75,7 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTy
 							onChange={e => setFormData({ ...formData, capacity: parseInt(e.target.value) })}
 							className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white focus:outline-none focus:border-cyan-600"
 							required
+							disabled={isLoading}
 						/>
 					</div>
 
@@ -77,15 +83,18 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit }: ClassTy
 						<button
 							type="button"
 							onClick={onClose}
-							className="flex-1 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
+							className="flex-1 bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors disabled:opacity-50"
+							disabled={isLoading}
 						>
 							Cancel
 						</button>
 						<button
 							type="submit"
-							className="flex-1 bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-lg transition-colors font-semibold"
+							className="flex-1 bg-cyan-600 hover:bg-cyan-700 px-4 py-2 rounded-lg transition-colors font-semibold flex items-center justify-center gap-2 disabled:opacity-50"
+							disabled={isLoading}
 						>
-							Add
+							{isLoading && <Loader size={16} className="animate-spin" />}
+							{isLoading ? "Adding..." : "Add"}
 						</button>
 					</div>
 				</form>

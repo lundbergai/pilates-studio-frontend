@@ -1,35 +1,88 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Plus, Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
-import classTypesData from "../data/classtypes.json";
+import { getAllClassTypes, createClassType, updateClassType, deleteClassType } from "@/services/apiService";
 import ClassTypeCard from "./ClassTypeCard";
 import ClassTypeAddModal from "./ClassTypeAddModal";
 import ClassTypeEditModal from "./ClassTypeEditModal";
 
 export default function ClassTypes() {
-	const [classTypes, setClassTypes] = useState<IClassType[]>(classTypesData);
+	const queryClient = useQueryClient();
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
 
+	// Fetch all class types
+	const {
+		data: classTypes = [],
+		isLoading,
+		error
+	} = useQuery({
+		queryKey: ["classTypes"],
+		queryFn: getAllClassTypes
+	});
+
 	const editingClassType = classTypes.find(ct => ct.id === editingId) || null;
 
+	// Delete mutation
+	const deleteMutation = useMutation({
+		mutationFn: deleteClassType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+		}
+	});
+
+	// Create mutation
+	const createMutation = useMutation({
+		mutationFn: createClassType,
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+			setShowAddModal(false);
+		}
+	});
+
+	// Update mutation
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }: { id: number; data: Omit<IClassType, "id"> }) => updateClassType(id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
+			setEditingId(null);
+		}
+	});
+
 	const handleDelete = (id: number) => {
-		setClassTypes(classTypes.filter(ct => ct.id !== id));
+		deleteMutation.mutate(id);
 	};
 
 	const handleAddSubmit = (data: Omit<IClassType, "id">) => {
-		const newClassType: IClassType = {
-			...data,
-			id: Math.max(...classTypes.map(ct => ct.id), 0) + 1
-		};
-		setClassTypes([...classTypes, newClassType]);
-		setShowAddModal(false);
+		createMutation.mutate(data);
 	};
 
 	const handleEditSubmit = (id: number, data: Omit<IClassType, "id">) => {
-		setClassTypes(classTypes.map(ct => (ct.id === id ? { ...data, id } : ct)));
-		setEditingId(null);
+		updateMutation.mutate({ id, data });
 	};
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="flex items-center gap-2">
+					<Loader size={24} className="animate-spin" />
+					<span>Loading class types...</span>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold mb-2">Error loading class types</h2>
+					<p className="text-gray-400">{error.message}</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen bg-[#282c34] text-white p-8">
@@ -53,13 +106,19 @@ export default function ClassTypes() {
 				))}
 			</div>
 
-			<ClassTypeAddModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSubmit} />
+			<ClassTypeAddModal
+				isOpen={showAddModal}
+				onClose={() => setShowAddModal(false)}
+				onSubmit={handleAddSubmit}
+				isLoading={createMutation.isPending}
+			/>
 
 			<ClassTypeEditModal
 				isOpen={editingId !== null}
 				classType={editingClassType}
 				onClose={() => setEditingId(null)}
 				onSubmit={handleEditSubmit}
+				isLoading={updateMutation.isPending}
 			/>
 		</div>
 	);
