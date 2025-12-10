@@ -3,14 +3,32 @@ import { Plus } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 import classTypesData from "../data/classtypes.json";
 import ClassTypeCard from "./ClassTypeCard";
+import ClassTypeAddModal from "./ClassTypeAddModal";
+import ClassTypeEditModal from "./ClassTypeEditModal";
 
 export default function ClassTypes() {
 	const [classTypes, setClassTypes] = useState<IClassType[]>(classTypesData);
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
 
+	const editingClassType = classTypes.find(ct => ct.id === editingId) || null;
+
 	const handleDelete = (id: number) => {
 		setClassTypes(classTypes.filter(ct => ct.id !== id));
+	};
+
+	const handleAddSubmit = (data: Omit<IClassType, "id">) => {
+		const newClassType: IClassType = {
+			...data,
+			id: Math.max(...classTypes.map(ct => ct.id), 0) + 1
+		};
+		setClassTypes([...classTypes, newClassType]);
+		setShowAddModal(false);
+	};
+
+	const handleEditSubmit = (id: number, data: Omit<IClassType, "id">) => {
+		setClassTypes(classTypes.map(ct => (ct.id === id ? { ...data, id } : ct)));
+		setEditingId(null);
 	};
 
 	return (
@@ -35,35 +53,14 @@ export default function ClassTypes() {
 				))}
 			</div>
 
-			{showAddModal && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-					<div className="bg-gray-800 rounded-lg p-6 w-full max-w-md border border-gray-700">
-						<h3 className="text-2xl font-bold mb-4">Add Class Type</h3>
-						<p className="text-gray-400">Modal coming soon...</p>
-						<button
-							onClick={() => setShowAddModal(false)}
-							className="mt-4 w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
-						>
-							Close
-						</button>
-					</div>
-				</div>
-			)}
+			<ClassTypeAddModal isOpen={showAddModal} onClose={() => setShowAddModal(false)} onSubmit={handleAddSubmit} />
 
-			{editingId && (
-				<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
-					<div className="bg-gray-800 rounded-lg p-6 w-full max-w-md border border-gray-700">
-						<h3 className="text-2xl font-bold mb-4">Edit Class Type</h3>
-						<p className="text-gray-400">Modal coming soon...</p>
-						<button
-							onClick={() => setEditingId(null)}
-							className="mt-4 w-full bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors"
-						>
-							Close
-						</button>
-					</div>
-				</div>
-			)}
+			<ClassTypeEditModal
+				isOpen={editingId !== null}
+				classType={editingClassType}
+				onClose={() => setEditingId(null)}
+				onSubmit={handleEditSubmit}
+			/>
 		</div>
 	);
 }
