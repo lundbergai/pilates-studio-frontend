@@ -1,6 +1,6 @@
-import { Link } from "@tanstack/react-router";
-import { Globe, Home, Network, BookOpen } from "lucide-react";
+import { BookOpen, Globe, Home, Network } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
+import { Link } from "@tanstack/react-router";
 
 export default function Navigation() {
 	const { user } = useUser();
