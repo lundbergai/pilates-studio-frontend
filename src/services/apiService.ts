@@ -2,7 +2,7 @@ import type { IClassType, ICreateClassTypeDto, IUpdateClassTypeDto } from "@/int
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-export async function getAllClassTypes(): Promise<IClassType[]> {
+export async function getAllClassTypes(): Promise<Array<IClassType>> {
 	const response = await fetch(`${API_BASE_URL}/classtypes`);
 	if (!response.ok) throw new Error("Failed to fetch class types");
 
