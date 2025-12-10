@@ -5,5 +5,11 @@
 			"main": false,
 			"develop": false
 		}
-	}
+	},
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/"
+		}
+	]
 }
