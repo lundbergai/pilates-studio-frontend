@@ -4,8 +4,7 @@ import { RouterProvider, createRouter } from '@tanstack/react-router'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { ClerkProvider } from '@clerk/clerk-react'
 import { routeTree } from './routeTree.gen'
-import reportWebVitals from './reportWebVitals.ts'
-import './styles.css'
+import './styles/styles.css'
 
 // Initialize QueryClient
 const queryClient = new QueryClient()
@@ -46,5 +45,3 @@ if (rootElement && !rootElement.innerHTML) {
     </StrictMode>,
   )
 }
-
-reportWebVitals()
