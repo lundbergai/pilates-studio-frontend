@@ -30,3 +30,11 @@ export interface IClass {
 	bookedSpots: number;
 	instructor: string;
 }
+
+export interface IUser {
+	id: number;
+	fullName: string;
+	email: string;
+	role: "admin" | "instructor" | "member" | null;
+	clerkUserId: string | null;
+}

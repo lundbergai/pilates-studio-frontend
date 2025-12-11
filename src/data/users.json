@@ -1,0 +1,51 @@
+[
+	{
+		"id": 1,
+		"clerkUserId": null,
+		"fullName": "Sarah Johnson",
+		"email": "sarah@example.com",
+		"role": "admin"
+	},
+	{
+		"id": 2,
+		"clerkUserId": "test_clerk_user_id_123",
+		"fullName": "Emma Davis",
+		"email": "emma@example.com",
+		"role": "instructor"
+	},
+	{
+		"id": 3,
+		"clerkUserId": null,
+		"fullName": "Marcus Lee",
+		"email": "marcus@example.com",
+		"role": "instructor"
+	},
+	{
+		"id": 4,
+		"clerkUserId": null,
+		"fullName": "Lisa Chen",
+		"email": "lisa@example.com",
+		"role": "member"
+	},
+	{
+		"id": 5,
+		"clerkUserId": null,
+		"fullName": "John Smith",
+		"email": "john@example.com",
+		"role": "member"
+	},
+	{
+		"id": 6,
+		"clerkUserId": null,
+		"fullName": "Alex Rodriguez",
+		"email": "alex@example.com",
+		"role": null
+	},
+	{
+		"id": 7,
+		"clerkUserId": null,
+		"fullName": "Sophie Martin",
+		"email": "sophie@example.com",
+		"role": null
+	}
+]
