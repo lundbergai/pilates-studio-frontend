@@ -30,6 +30,15 @@ export default function Schedule() {
 	// Get all dates as an array
 	const dates = Object.keys(classesGroupedByDate);
 
+	const handleDelete = (id: number) => {
+		setClasses(classes.filter(c => c.id !== id));
+	};
+
+	const handleEdit = (id: number) => {
+		console.log("Edit class:", id);
+		// TODO: Implement edit modal
+	};
+
 	return (
 		<div className="min-h-screen bg-[#282c34] text-white p-8">
 			<div className="flex items-start justify-between mb-8">
@@ -52,7 +61,7 @@ export default function Schedule() {
 						<h3 className="text-2xl font-bold mb-4 text-cyan-600">{date}</h3>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{classesGroupedByDate[date].map(classItem => (
-								<ClassCard key={classItem.id} classData={classItem} />
+								<ClassCard key={classItem.id} classData={classItem} onEdit={handleEdit} onDelete={handleDelete} />
 							))}
 						</div>
 					</div>
