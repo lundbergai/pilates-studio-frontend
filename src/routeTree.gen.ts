@@ -10,7 +10,6 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as UsersRouteImport } from './routes/users'
-import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as ClerkRouteImport } from './routes/clerk'
 import { Route as ClasstypesRouteImport } from './routes/classtypes'
 import { Route as IndexRouteImport } from './routes/index'
@@ -18,11 +17,6 @@ import { Route as IndexRouteImport } from './routes/index'
 const UsersRoute = UsersRouteImport.update({
   id: '/users',
   path: '/users',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ScheduleRoute = ScheduleRouteImport.update({
-  id: '/schedule',
-  path: '/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClerkRoute = ClerkRouteImport.update({
@@ -45,14 +39,12 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/schedule': typeof ScheduleRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/schedule': typeof ScheduleRoute
   '/users': typeof UsersRoute
 }
 export interface FileRoutesById {
@@ -60,22 +52,20 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/schedule': typeof ScheduleRoute
   '/users': typeof UsersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classtypes' | '/clerk' | '/schedule' | '/users'
+  fullPaths: '/' | '/classtypes' | '/clerk' | '/users'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classtypes' | '/clerk' | '/schedule' | '/users'
-  id: '__root__' | '/' | '/classtypes' | '/clerk' | '/schedule' | '/users'
+  to: '/' | '/classtypes' | '/clerk' | '/users'
+  id: '__root__' | '/' | '/classtypes' | '/clerk' | '/users'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClasstypesRoute: typeof ClasstypesRoute
   ClerkRoute: typeof ClerkRoute
-  ScheduleRoute: typeof ScheduleRoute
   UsersRoute: typeof UsersRoute
 }
 
@@ -86,13 +76,6 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof UsersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/schedule': {
-      id: '/schedule'
-      path: '/schedule'
-      fullPath: '/schedule'
-      preLoaderRoute: typeof ScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clerk': {
@@ -123,7 +106,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClasstypesRoute: ClasstypesRoute,
   ClerkRoute: ClerkRoute,
-  ScheduleRoute: ScheduleRoute,
   UsersRoute: UsersRoute,
 }
 export const routeTree = rootRouteImport

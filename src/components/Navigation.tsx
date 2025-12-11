@@ -1,4 +1,4 @@
-import { BookOpen, Calendar, Globe, Home, Menu, Users as UsersIcon, X } from "lucide-react";
+import { BookOpen, Globe, Home, Menu, Users as UsersIcon, X } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -44,18 +44,6 @@ export default function Navigation() {
 						}}
 					>
 						<Home size={20} />
-						<span className="font-medium">Home</span>
-					</Link>
-
-					<Link
-						to="/schedule"
-						onClick={() => setIsMobileNavOpen(false)}
-						className={navLinkClass}
-						activeProps={{
-							className: navLinkActiveClass
-						}}
-					>
-						<Calendar size={20} />
 						<span className="font-medium">Schedule</span>
 					</Link>
 
