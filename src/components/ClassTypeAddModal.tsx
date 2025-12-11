@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 
-interface ClassTypeAddModalProps {
+interface IClassTypeAddModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: (data: Omit<IClassType, "id">) => void;
 	isLoading?: boolean;
 }
 
-export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading = false }: ClassTypeAddModalProps) {
+export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading = false }: IClassTypeAddModalProps) {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",

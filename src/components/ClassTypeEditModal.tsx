@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 
-interface ClassTypeEditModalProps {
+interface IClassTypeEditModalProps {
 	isOpen: boolean;
 	classType: IClassType | null;
 	onClose: () => void;
@@ -10,7 +10,7 @@ interface ClassTypeEditModalProps {
 	isLoading?: boolean;
 }
 
-export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmit, isLoading = false }: ClassTypeEditModalProps) {
+export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmit, isLoading = false }: IClassTypeEditModalProps) {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
