@@ -22,7 +22,7 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 
 	return (
 		<div className="bg-gray-800 rounded-lg p-6 border border-gray-700 hover:border-cyan-600 transition-colors">
-			<div className="flex items-start justify-between mb-3">
+			<div className="flex items-baseline justify-between mb-3">
 				<div>
 					<h3 className="text-2xl font-bold mb-1">{classData.classTypeName}</h3>
 					<p className="text-gray-400 text-sm">{formatDate(startDate)}</p>
