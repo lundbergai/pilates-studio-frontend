@@ -1,17 +1,11 @@
-import type { IClassType, ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
+import type { IClass, IClassType, ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
+// Class Types
 export async function getAllClassTypes(): Promise<Array<IClassType>> {
 	const response = await fetch(`${API_BASE_URL}/classtypes`);
 	if (!response.ok) throw new Error("Failed to fetch class types");
-
-	return response.json();
-}
-
-export async function getClassTypeById(id: number): Promise<IClassType> {
-	const response = await fetch(`${API_BASE_URL}/classtypes/${id}`);
-	if (!response.ok) throw new Error("Failed to fetch class type");
 
 	return response.json();
 }
@@ -43,4 +37,12 @@ export async function deleteClassType(id: number): Promise<void> {
 		method: "DELETE"
 	});
 	if (!response.ok) throw new Error("Failed to delete class type");
+}
+
+// Scheduled Classes
+export async function getAllScheduledClasses(): Promise<Array<IClass>> {
+	const response = await fetch(`${API_BASE_URL}/scheduledclasses`);
+	if (!response.ok) throw new Error("Failed to fetch scheduled classes");
+
+	return response.json();
 }
