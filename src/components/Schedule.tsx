@@ -1,12 +1,22 @@
 import { useState } from "react";
-import { Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { Loader, Plus } from "lucide-react";
 import type { IClass } from "@/interfaces";
-import classesData from "../data/schedule.json";
+import { getAllScheduledClasses } from "@/services/apiService";
 import ClassCard from "./ClassCard";
 
 export default function Schedule() {
-	const [classes, setClasses] = useState<IClass[]>(classesData);
 	const [showScheduleModal, setShowScheduleModal] = useState(false);
+
+	// Fetch all scheduled classes
+	const {
+		data: classes = [],
+		isLoading,
+		error
+	} = useQuery({
+		queryKey: ["scheduledClasses"],
+		queryFn: getAllScheduledClasses
+	});
 
 	// Sort classes by start time
 	const sortedClasses = [...classes].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
@@ -31,13 +41,36 @@ export default function Schedule() {
 	const dates = Object.keys(classesGroupedByDate);
 
 	const handleDelete = (id: number) => {
-		setClasses(classes.filter(c => c.id !== id));
+		// TODO: Implement delete functionality
+		console.log("Delete class:", id);
 	};
 
 	const handleEdit = (id: number) => {
-		console.log("Edit class:", id);
 		// TODO: Implement edit modal
+		console.log("Edit class:", id);
 	};
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="flex items-center gap-2">
+					<Loader size={24} className="animate-spin" />
+					<span>Loading class schedule...</span>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold mb-2">Error loading class schedule</h2>
+					<p className="text-gray-400">{error.message}</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className="min-h-screen bg-[#282c34] text-white p-8">
