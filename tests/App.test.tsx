@@ -10,7 +10,7 @@ describe("App Tests", () => {
 	test("App component renders", () => {
 		vi.clearAllMocks();
 		(global.fetch as any).mockResolvedValue({
-			json: async () => []
+			json: async () => await []
 		});
 
 		const queryClient = new QueryClient();
