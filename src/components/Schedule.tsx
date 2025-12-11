@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
 import type { IClass } from "@/interfaces";
 import { getAllScheduledClasses } from "@/services/apiService";
-import ClassCard from "./ClassCard";
+import ScheduledClassCard from "./ScheduledClassCard";
 
 export default function Schedule() {
 	const [showScheduleModal, setShowScheduleModal] = useState(false);
@@ -94,7 +94,7 @@ export default function Schedule() {
 						<h3 className="text-2xl font-bold mb-4 text-cyan-600">{date}</h3>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{classesGroupedByDate[date].map(classItem => (
-								<ClassCard key={classItem.id} classData={classItem} onEdit={handleEdit} onDelete={handleDelete} />
+								<ScheduledClassCard key={classItem.id} classData={classItem} onEdit={handleEdit} onDelete={handleDelete} />
 							))}
 						</div>
 					</div>
