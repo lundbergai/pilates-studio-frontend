@@ -1,4 +1,4 @@
-import { BookOpen, Globe, Home, Menu, Network, X } from "lucide-react";
+import { BookOpen, Calendar, Globe, Home, Menu, X } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -48,6 +48,18 @@ export default function Navigation() {
 					</Link>
 
 					<Link
+						to="/schedule"
+						onClick={() => setIsMobileNavOpen(false)}
+						className={navLinkClass}
+						activeProps={{
+							className: navLinkActiveClass
+						}}
+					>
+						<Calendar size={20} />
+						<span className="font-medium">Schedule</span>
+					</Link>
+
+					<Link
 						to="/classtypes"
 						onClick={() => setIsMobileNavOpen(false)}
 						className={navLinkClass}
@@ -69,18 +81,6 @@ export default function Navigation() {
 					>
 						<Globe size={20} />
 						<span className="font-medium">Clerk</span>
-					</Link>
-
-					<Link
-						to="/tanstack-query"
-						onClick={() => setIsMobileNavOpen(false)}
-						className={navLinkClass}
-						activeProps={{
-							className: navLinkActiveClass
-						}}
-					>
-						<Network size={20} />
-						<span className="font-medium">TanStack Query</span>
 					</Link>
 				</nav>
 

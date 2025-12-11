@@ -9,14 +9,14 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TanstackQueryRouteImport } from './routes/tanstack-query'
+import { Route as ScheduleRouteImport } from './routes/schedule'
 import { Route as ClerkRouteImport } from './routes/clerk'
 import { Route as ClasstypesRouteImport } from './routes/classtypes'
 import { Route as IndexRouteImport } from './routes/index'
 
-const TanstackQueryRoute = TanstackQueryRouteImport.update({
-  id: '/tanstack-query',
-  path: '/tanstack-query',
+const ScheduleRoute = ScheduleRouteImport.update({
+  id: '/schedule',
+  path: '/schedule',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ClerkRoute = ClerkRouteImport.update({
@@ -39,43 +39,43 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/tanstack-query': typeof TanstackQueryRoute
+  '/schedule': typeof ScheduleRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/tanstack-query': typeof TanstackQueryRoute
+  '/schedule': typeof ScheduleRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/classtypes': typeof ClasstypesRoute
   '/clerk': typeof ClerkRoute
-  '/tanstack-query': typeof TanstackQueryRoute
+  '/schedule': typeof ScheduleRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/classtypes' | '/clerk' | '/tanstack-query'
+  fullPaths: '/' | '/classtypes' | '/clerk' | '/schedule'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/classtypes' | '/clerk' | '/tanstack-query'
-  id: '__root__' | '/' | '/classtypes' | '/clerk' | '/tanstack-query'
+  to: '/' | '/classtypes' | '/clerk' | '/schedule'
+  id: '__root__' | '/' | '/classtypes' | '/clerk' | '/schedule'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ClasstypesRoute: typeof ClasstypesRoute
   ClerkRoute: typeof ClerkRoute
-  TanstackQueryRoute: typeof TanstackQueryRoute
+  ScheduleRoute: typeof ScheduleRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tanstack-query': {
-      id: '/tanstack-query'
-      path: '/tanstack-query'
-      fullPath: '/tanstack-query'
-      preLoaderRoute: typeof TanstackQueryRouteImport
+    '/schedule': {
+      id: '/schedule'
+      path: '/schedule'
+      fullPath: '/schedule'
+      preLoaderRoute: typeof ScheduleRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/clerk': {
@@ -106,7 +106,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ClasstypesRoute: ClasstypesRoute,
   ClerkRoute: ClerkRoute,
-  TanstackQueryRoute: TanstackQueryRoute,
+  ScheduleRoute: ScheduleRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

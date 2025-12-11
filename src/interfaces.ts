@@ -19,3 +19,14 @@ export interface IUpdateClassTypeDto {
 	duration?: number;
 	capacity?: number;
 }
+
+export interface IClass {
+	id: number;
+	classTypeId: number;
+	classTypeName: string;
+	classTypeDuration: number;
+	classTypeCapacity: number;
+	startTime: string;
+	bookedSpots: number;
+	instructor: string;
+}

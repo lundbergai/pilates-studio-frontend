@@ -1,0 +1,62 @@
+[
+	{
+		"id": 1,
+		"classTypeId": 1,
+		"classTypeName": "Reformer Pilates",
+		"classTypeDuration": 60,
+		"classTypeCapacity": 12,
+		"startTime": "2025-12-15T08:00:00",
+		"bookedSpots": 0,
+		"instructor": "Sarah Johnson"
+	},
+	{
+		"id": 2,
+		"classTypeId": 1,
+		"classTypeName": "Reformer Pilates",
+		"classTypeDuration": 60,
+		"classTypeCapacity": 12,
+		"startTime": "2025-12-15T10:00:00",
+		"bookedSpots": 0,
+		"instructor": "Sarah Johnson"
+	},
+	{
+		"id": 3,
+		"classTypeId": 2,
+		"classTypeName": "Mat Pilates",
+		"classTypeDuration": 45,
+		"classTypeCapacity": 8,
+		"startTime": "2025-12-15T14:00:00",
+		"bookedSpots": 0,
+		"instructor": "Emma Davis"
+	},
+	{
+		"id": 4,
+		"classTypeId": 3,
+		"classTypeName": "Power Yoga",
+		"classTypeDuration": 50,
+		"classTypeCapacity": 10,
+		"startTime": "2025-12-16T09:00:00",
+		"bookedSpots": 0,
+		"instructor": "Marcus Lee"
+	},
+	{
+		"id": 5,
+		"classTypeId": 1,
+		"classTypeName": "Reformer Pilates",
+		"classTypeDuration": 60,
+		"classTypeCapacity": 12,
+		"startTime": "2025-12-16T15:00:00",
+		"bookedSpots": 0,
+		"instructor": "Sarah Johnson"
+	},
+	{
+		"id": 6,
+		"classTypeId": 2,
+		"classTypeName": "Mat Pilates",
+		"classTypeDuration": 45,
+		"classTypeCapacity": 8,
+		"startTime": "2025-12-17T07:00:00",
+		"bookedSpots": 0,
+		"instructor": "Emma Davis"
+	}
+]
