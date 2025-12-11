@@ -6,6 +6,7 @@ import ClassTypeCard from "./ClassTypeCard";
 import ClassTypeEditModal from "./ClassTypeEditModal";
 import type { IClassType } from "@/interfaces";
 import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
+import { SignedIn } from "@clerk/clerk-react";
 
 export default function ClassTypes() {
 	const queryClient = useQueryClient();
@@ -85,41 +86,43 @@ export default function ClassTypes() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[#282c34] text-white p-8">
-			<div className="flex items-start justify-between mb-8">
-				<div>
-					<h1 className="text-5xl font-bold mb-2">Class Types</h1>
-					<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
+		<SignedIn>
+			<div className="min-h-screen bg-[#282c34] text-white p-8">
+				<div className="flex items-start justify-between mb-8">
+					<div>
+						<h1 className="text-5xl font-bold mb-2">Class Types</h1>
+						<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
+					</div>
+					<button
+						onClick={() => setShowAddModal(true)}
+						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
+					>
+						<Plus size={20} />
+						Add Class Type
+					</button>
 				</div>
-				<button
-					onClick={() => setShowAddModal(true)}
-					className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-				>
-					<Plus size={20} />
-					Add Class Type
-				</button>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{classTypes.map(classType => (
+						<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
+					))}
+				</div>
+
+				<ClassTypeAddModal
+					isOpen={showAddModal}
+					onClose={() => setShowAddModal(false)}
+					onSubmit={handleAddSubmit}
+					isLoading={createMutation.isPending}
+				/>
+
+				<ClassTypeEditModal
+					isOpen={editingId !== null}
+					classType={editingClassType}
+					onClose={() => setEditingId(null)}
+					onSubmit={handleEditSubmit}
+					isLoading={updateMutation.isPending}
+				/>
 			</div>
-
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{classTypes.map(classType => (
-					<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
-				))}
-			</div>
-
-			<ClassTypeAddModal
-				isOpen={showAddModal}
-				onClose={() => setShowAddModal(false)}
-				onSubmit={handleAddSubmit}
-				isLoading={createMutation.isPending}
-			/>
-
-			<ClassTypeEditModal
-				isOpen={editingId !== null}
-				classType={editingClassType}
-				onClose={() => setEditingId(null)}
-				onSubmit={handleEditSubmit}
-				isLoading={updateMutation.isPending}
-			/>
-		</div>
+		</SignedIn>
 	);
 }

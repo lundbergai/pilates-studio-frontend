@@ -1,4 +1,4 @@
-import { BookOpen, Globe, Home, Menu, Users as UsersIcon, X } from "lucide-react";
+import { BookOpen, Globe, Menu, Users as UsersIcon, X } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
@@ -35,6 +35,7 @@ export default function Navigation() {
 				</div>
 
 				<nav className="flex-1 p-4 overflow-y-auto">
+					{/* Schedule - Always visible */}
 					<Link
 						to="/"
 						onClick={() => setIsMobileNavOpen(false)}
@@ -43,45 +44,35 @@ export default function Navigation() {
 							className: navLinkActiveClass
 						}}
 					>
-						<Home size={20} />
 						<span className="font-medium">Schedule</span>
 					</Link>
 
-					<Link
-						to="/classtypes"
-						onClick={() => setIsMobileNavOpen(false)}
-						className={navLinkClass}
-						activeProps={{
-							className: navLinkActiveClass
-						}}
-					>
-						<BookOpen size={20} />
-						<span className="font-medium">Class Types</span>
-					</Link>
+					{/* Admin/Management links - Only when signed in */}
+					<SignedIn>
+						<Link
+							to="/classtypes"
+							onClick={() => setIsMobileNavOpen(false)}
+							className={navLinkClass}
+							activeProps={{
+								className: navLinkActiveClass
+							}}
+						>
+							<BookOpen size={20} />
+							<span className="font-medium">Class Types</span>
+						</Link>
 
-					<Link
-						to="/users"
-						onClick={() => setIsMobileNavOpen(false)}
-						className={navLinkClass}
-						activeProps={{
-							className: navLinkActiveClass
-						}}
-					>
-						<UsersIcon size={20} />
-						<span className="font-medium">Users</span>
-					</Link>
-
-					<Link
-						to="/clerk"
-						onClick={() => setIsMobileNavOpen(false)}
-						className={navLinkClass}
-						activeProps={{
-							className: navLinkActiveClass
-						}}
-					>
-						<Globe size={20} />
-						<span className="font-medium">Clerk</span>
-					</Link>
+						<Link
+							to="/users"
+							onClick={() => setIsMobileNavOpen(false)}
+							className={navLinkClass}
+							activeProps={{
+								className: navLinkActiveClass
+							}}
+						>
+							<UsersIcon size={20} />
+							<span className="font-medium">Users</span>
+						</Link>
+					</SignedIn>
 				</nav>
 
 				<div className="p-4 border-t border-gray-700 bg-gray-800 flex flex-col gap-3">
