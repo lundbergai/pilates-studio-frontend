@@ -2,9 +2,11 @@ import { BookOpen, Calendar, Menu, Users as UsersIcon, X } from "lucide-react";
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from "@clerk/clerk-react";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
+import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Navigation() {
 	const { user } = useUser();
+	const { isAdmin, isInstructor } = useUserRole();
 	const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
 
 	const navLinkClass = "flex items-center gap-3 p-3 rounded-lg hover:bg-gray-800 transition-colors mb-2 whitespace-nowrap";
@@ -48,31 +50,37 @@ export default function Navigation() {
 						<span className="font-medium">Schedule</span>
 					</Link>
 
-					{/* Admin/Management links - Only when signed in */}
+					{/* Admin only links */}
 					<SignedIn>
-						<Link
-							to="/classtypes"
-							onClick={() => setIsMobileNavOpen(false)}
-							className={navLinkClass}
-							activeProps={{
-								className: navLinkActiveClass
-							}}
-						>
-							<BookOpen size={20} />
-							<span className="font-medium">Class Types</span>
-						</Link>
+						{/* Class Types - Admin and Instructor can see */}
+						{(isAdmin || isInstructor) && (
+							<Link
+								to="/classtypes"
+								onClick={() => setIsMobileNavOpen(false)}
+								className={navLinkClass}
+								activeProps={{
+									className: navLinkActiveClass
+								}}
+							>
+								<BookOpen size={20} />
+								<span className="font-medium">Class Types</span>
+							</Link>
+						)}
 
-						<Link
-							to="/users"
-							onClick={() => setIsMobileNavOpen(false)}
-							className={navLinkClass}
-							activeProps={{
-								className: navLinkActiveClass
-							}}
-						>
-							<UsersIcon size={20} />
-							<span className="font-medium">Users</span>
-						</Link>
+						{/* Users - Admin and Instructor can see */}
+						{(isAdmin || isInstructor) && (
+							<Link
+								to="/users"
+								onClick={() => setIsMobileNavOpen(false)}
+								className={navLinkClass}
+								activeProps={{
+									className: navLinkActiveClass
+								}}
+							>
+								<UsersIcon size={20} />
+								<span className="font-medium">Users</span>
+							</Link>
+						)}
 					</SignedIn>
 				</nav>
 
