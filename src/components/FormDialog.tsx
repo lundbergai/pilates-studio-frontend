@@ -56,7 +56,7 @@ export default function FormDialog({
 									disabled={isLoading}
 								>
 									{isLoading && <Loader size={16} className="animate-spin" />}
-									{isLoading ? `${submitLabel}ing...` : submitLabel}
+									{isLoading ? `${submitLabel}...` : submitLabel}
 								</button>
 							</div>
 						</form>
