@@ -26,9 +26,28 @@ export interface IClass {
 	classTypeName: string;
 	classTypeDuration: number;
 	classTypeCapacity: number;
+	instructorId: number;
+	instructor: string;
 	startTime: string;
 	bookedSpots: number;
-	instructor: string;
+}
+
+export interface ICreateScheduledClassDto {
+	classTypeId: number;
+	instructorId: number;
+	startTime: string;
+}
+
+export interface IUpdateScheduledClassDto {
+	classTypeId?: number;
+	instructorId?: number;
+	startTime?: string;
+}
+
+export interface IInstructor {
+	id: number;
+	fullName: string;
+	email: string;
 }
 
 export interface IUser {
