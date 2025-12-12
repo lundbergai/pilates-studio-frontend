@@ -1,4 +1,13 @@
-import type { IClass, IClassType, ICreateClassTypeDto, IUpdateClassTypeDto, IUser } from "@/interfaces";
+import type {
+	IClass,
+	IClassType,
+	ICreateClassTypeDto,
+	IUpdateClassTypeDto,
+	ICreateScheduledClassDto,
+	IUpdateScheduledClassDto,
+	IInstructor,
+	IUser
+} from "@/interfaces";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -61,6 +70,46 @@ export async function getAllScheduledClasses(token?: string | null): Promise<Arr
 		headers: getAuthHeaders(token)
 	});
 	if (!response.ok) throw new Error("Failed to fetch scheduled classes");
+
+	return response.json();
+}
+
+export async function createScheduledClass(data: ICreateScheduledClassDto, token?: string | null): Promise<IClass> {
+	const response = await fetch(`${API_BASE_URL}/scheduledclasses`, {
+		method: "POST",
+		headers: getAuthHeaders(token),
+		body: JSON.stringify(data)
+	});
+	if (!response.ok) throw new Error("Failed to create scheduled class");
+
+	return response.json();
+}
+
+export async function updateScheduledClass(id: number, data: IUpdateScheduledClassDto, token?: string | null): Promise<IClass> {
+	const response = await fetch(`${API_BASE_URL}/scheduledclasses/${id}`, {
+		method: "PATCH",
+		headers: getAuthHeaders(token),
+		body: JSON.stringify(data)
+	});
+	if (!response.ok) throw new Error("Failed to update scheduled class");
+
+	return response.json();
+}
+
+export async function deleteScheduledClass(id: number, token?: string | null): Promise<void> {
+	const response = await fetch(`${API_BASE_URL}/scheduledclasses/${id}`, {
+		method: "DELETE",
+		headers: getAuthHeaders(token)
+	});
+	if (!response.ok) throw new Error("Failed to delete scheduled class");
+}
+
+// Instructors
+export async function getInstructors(token?: string | null): Promise<Array<IInstructor>> {
+	const response = await fetch(`${API_BASE_URL}/users/instructors`, {
+		headers: getAuthHeaders(token)
+	});
+	if (!response.ok) throw new Error("Failed to fetch instructors");
 
 	return response.json();
 }

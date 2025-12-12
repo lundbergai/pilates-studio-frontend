@@ -1,15 +1,19 @@
 import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
-import type { IClass } from "@/interfaces";
-import { getAllScheduledClasses } from "@/services/apiService";
+import type { IClass, ICreateScheduledClassDto, IUpdateScheduledClassDto } from "@/interfaces";
+import { getAllScheduledClasses, createScheduledClass, updateScheduledClass, deleteScheduledClass } from "@/services/apiService";
 import ScheduledClassCard from "./ScheduledClassCard";
+import ScheduleDialog from "./ScheduleDialog";
+import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Schedule() {
 	const { getToken } = useAuth();
-	const [showScheduleModal, setShowScheduleModal] = useState(false);
-	console.log("Schedule modal open:", showScheduleModal);
+	const { canManage } = useUserRole();
+	const queryClient = useQueryClient();
+	const [showDialog, setShowDialog] = useState(false);
+	const [editingId, setEditingId] = useState<number | null>(null);
 
 	// Fetch all scheduled classes with optional token
 	const {
@@ -21,6 +25,44 @@ export default function Schedule() {
 		queryFn: async () => {
 			const token = await getToken();
 			return getAllScheduledClasses(token);
+		}
+	});
+
+	const editingClass = classes.find(c => c.id === editingId) || null;
+
+	// Create mutation
+	const createMutation = useMutation({
+		mutationFn: async (data: ICreateScheduledClassDto) => {
+			const token = await getToken();
+			return createScheduledClass(data, token);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["scheduledClasses"] });
+			setShowDialog(false);
+		}
+	});
+
+	// Update mutation
+	const updateMutation = useMutation({
+		mutationFn: async ({ id, data }: { id: number; data: IUpdateScheduledClassDto }) => {
+			const token = await getToken();
+			return updateScheduledClass(id, data, token);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["scheduledClasses"] });
+			setEditingId(null);
+			setShowDialog(false);
+		}
+	});
+
+	// Delete mutation
+	const deleteMutation = useMutation({
+		mutationFn: async (id: number) => {
+			const token = await getToken();
+			return deleteScheduledClass(id, token);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["scheduledClasses"] });
 		}
 	});
 
@@ -46,14 +88,33 @@ export default function Schedule() {
 	// Get all dates as an array
 	const dates = Object.keys(classesGroupedByDate);
 
-	const handleDelete = (id: number) => {
-		// TODO: Implement delete functionality
-		console.log("Delete class:", id);
+	const handleOpenAddDialog = () => {
+		setEditingId(null);
+		setShowDialog(true);
 	};
 
-	const handleEdit = (id: number) => {
-		// TODO: Implement edit modal
-		console.log("Edit class:", id);
+	const handleOpenEditDialog = (id: number) => {
+		setEditingId(id);
+		setShowDialog(true);
+	};
+
+	const handleCloseDialog = () => {
+		setShowDialog(false);
+		setEditingId(null);
+	};
+
+	const handleDelete = (id: number) => {
+		deleteMutation.mutate(id);
+	};
+
+	const handleAdd = (data: ICreateScheduledClassDto) => {
+		createMutation.mutate(data);
+	};
+
+	const handleEdit = (data: IUpdateScheduledClassDto) => {
+		if (editingId !== null) {
+			updateMutation.mutate({ id: editingId, data });
+		}
 	};
 
 	if (isLoading) {
@@ -85,13 +146,15 @@ export default function Schedule() {
 					<h1 className="text-5xl font-bold mb-2">Class Schedule</h1>
 					<h2 className="text-xl text-gray-400">View and manage weekly classes</h2>
 				</div>
-				<button
-					onClick={() => setShowScheduleModal(true)}
-					className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-				>
-					<Plus size={20} />
-					Schedule Class
-				</button>
+				{canManage && (
+					<button
+						onClick={handleOpenAddDialog}
+						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
+					>
+						<Plus size={20} />
+						Schedule Class
+					</button>
+				)}
 			</div>
 
 			<div className="space-y-8">
@@ -100,12 +163,43 @@ export default function Schedule() {
 						<h3 className="text-2xl font-bold mb-4 text-cyan-600">{date}</h3>
 						<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 							{classesGroupedByDate[date].map(classItem => (
-								<ScheduledClassCard key={classItem.id} classData={classItem} onEdit={handleEdit} onDelete={handleDelete} />
+								<ScheduledClassCard
+									key={classItem.id}
+									classData={classItem}
+									onEdit={canManage ? handleOpenEditDialog : undefined}
+									onDelete={canManage ? handleDelete : undefined}
+								/>
 							))}
 						</div>
 					</div>
 				))}
 			</div>
+
+			{canManage && (
+				<ScheduleDialog
+					isOpen={showDialog}
+					initialData={
+						editingClass
+							? {
+									classTypeId: editingClass.classTypeId,
+									instructorId: editingClass.instructorId,
+									startTime: editingClass.startTime
+								}
+							: null
+					}
+					title={editingId !== null ? "Edit Scheduled Class" : "Schedule New Class"}
+					submitLabel={editingId !== null ? "Save" : "Schedule"}
+					onClose={handleCloseDialog}
+					onSubmit={data => {
+						if (editingId !== null) {
+							handleEdit(data as IUpdateScheduledClassDto);
+						} else {
+							handleAdd(data as ICreateScheduledClassDto);
+						}
+					}}
+					isLoading={createMutation.isPending || updateMutation.isPending}
+				/>
+			)}
 		</div>
 	);
 }

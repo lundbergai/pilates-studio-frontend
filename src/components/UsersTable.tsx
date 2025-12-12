@@ -3,11 +3,9 @@ import UserRow from "./UserRow";
 
 interface IUsersTableProps {
 	users: IUser[];
-	onEdit?: (id: number) => void;
-	onDelete?: (id: number) => void;
 }
 
-export default function UsersTable({ users, onEdit, onDelete }: IUsersTableProps) {
+export default function UsersTable({ users }: IUsersTableProps) {
 	return (
 		<div className="overflow-x-auto">
 			<table className="w-full text-left border-collapse">
@@ -17,12 +15,11 @@ export default function UsersTable({ users, onEdit, onDelete }: IUsersTableProps
 						<th className="px-6 py-4 font-semibold text-gray-300">Email</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Roles</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Clerk ID</th>
-						<th className="px-6 py-4 font-semibold text-gray-300">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{users.map(user => (
-						<UserRow key={user.id} user={user} onEdit={onEdit} onDelete={onDelete} />
+						<UserRow key={user.id} user={user} />
 					))}
 				</tbody>
 			</table>
