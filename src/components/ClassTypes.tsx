@@ -1,9 +1,8 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
-import ClassTypeAddModal from "./ClassTypeAddModal";
+import ClassTypeDialog from "./ClassTypeDialog";
 import ClassTypeCard from "./ClassTypeCard";
-import ClassTypeEditModal from "./ClassTypeEditModal";
 import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
 import { SignedIn } from "@clerk/clerk-react";
@@ -11,7 +10,7 @@ import { useAuth } from "@clerk/clerk-react";
 
 export default function ClassTypes() {
 	const queryClient = useQueryClient();
-	const [showAddModal, setShowAddModal] = useState(false);
+	const [showDialog, setShowDialog] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
 	const { getToken } = useAuth();
 
@@ -49,7 +48,7 @@ export default function ClassTypes() {
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
-			setShowAddModal(false);
+			setShowDialog(false);
 		}
 	});
 
@@ -62,6 +61,7 @@ export default function ClassTypes() {
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
 			setEditingId(null);
+			setShowDialog(false);
 		}
 	});
 
@@ -69,11 +69,26 @@ export default function ClassTypes() {
 		deleteMutation.mutate(id);
 	};
 
-	const handleAddSubmit = (data: ICreateClassTypeDto) => {
+	const handleOpenAddDialog = () => {
+		setEditingId(null);
+		setShowDialog(true);
+	};
+
+	const handleOpenEditDialog = (id: number) => {
+		setEditingId(id);
+		setShowDialog(true);
+	};
+
+	const handleCloseDialog = () => {
+		setShowDialog(false);
+		setEditingId(null);
+	};
+
+	const handleAdd = (data: ICreateClassTypeDto) => {
 		createMutation.mutate(data);
 	};
 
-	const handleEditSubmit = (id: number, data: IUpdateClassTypeDto) => {
+	const handleEdit = (id: number, data: IUpdateClassTypeDto) => {
 		updateMutation.mutate({ id, data });
 	};
 
@@ -108,7 +123,7 @@ export default function ClassTypes() {
 						<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
 					</div>
 					<button
-						onClick={() => setShowAddModal(true)}
+						onClick={handleOpenAddDialog}
 						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
 					>
 						<Plus size={20} />
@@ -118,23 +133,33 @@ export default function ClassTypes() {
 
 				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
 					{classTypes.map(classType => (
-						<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
+						<ClassTypeCard key={classType.id} classType={classType} onEdit={handleOpenEditDialog} onDelete={handleDelete} />
 					))}
 				</div>
 
-				<ClassTypeAddModal
-					isOpen={showAddModal}
-					onClose={() => setShowAddModal(false)}
-					onSubmit={handleAddSubmit}
-					isLoading={createMutation.isPending}
-				/>
-
-				<ClassTypeEditModal
-					isOpen={editingId !== null}
-					classType={editingClassType}
-					onClose={() => setEditingId(null)}
-					onSubmit={handleEditSubmit}
-					isLoading={updateMutation.isPending}
+				<ClassTypeDialog
+					isOpen={showDialog}
+					initialData={
+						editingClassType
+							? {
+									title: editingClassType.title,
+									description: editingClassType.description,
+									duration: editingClassType.duration,
+									capacity: editingClassType.capacity
+								}
+							: null
+					}
+					title={editingId !== null ? "Edit Class Type" : "Add Class Type"}
+					submitLabel={editingId !== null ? "Save" : "Add"}
+					onClose={handleCloseDialog}
+					onSubmit={data => {
+						if (editingId !== null) {
+							handleEdit(editingId, data as IUpdateClassTypeDto);
+						} else {
+							handleAdd(data as ICreateClassTypeDto);
+						}
+					}}
+					isLoading={createMutation.isPending || updateMutation.isPending}
 				/>
 			</div>
 		</SignedIn>
