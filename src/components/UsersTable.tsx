@@ -13,9 +13,10 @@ export default function UsersTable({ users, onEdit, onDelete }: IUsersTableProps
 			<table className="w-full text-left border-collapse">
 				<thead>
 					<tr className="border-b border-gray-700 bg-gray-900">
+						<th className="px-6 py-4 font-semibold text-gray-300">ID</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Full Name</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Email</th>
-						<th className="px-6 py-4 font-semibold text-gray-300">Role</th>
+						<th className="px-6 py-4 font-semibold text-gray-300">Roles</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Clerk ID</th>
 						<th className="px-6 py-4 font-semibold text-gray-300">Actions</th>
 					</tr>

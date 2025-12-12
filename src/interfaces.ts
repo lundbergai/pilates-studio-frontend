@@ -35,6 +35,8 @@ export interface IUser {
 	id: number;
 	fullName: string;
 	email: string;
-	role: "admin" | "instructor" | "member" | null;
 	clerkUserId: string | null;
+	isAdmin: boolean;
+	isInstructor: boolean;
+	isMember: boolean;
 }

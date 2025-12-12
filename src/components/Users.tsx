@@ -1,13 +1,26 @@
 import { useState } from "react";
-import { Plus, Search } from "lucide-react";
-import type { IUser } from "@/interfaces";
-import mockUsers from "../data/users.json";
+import { SignedIn, useAuth } from "@clerk/clerk-react";
+import { useQuery } from "@tanstack/react-query";
+import { Loader, Plus, Search } from "lucide-react";
+import { getAllUsers } from "@/services/apiService";
 import UsersTable from "./UsersTable";
-import { SignedIn } from "@clerk/clerk-react";
 
 export default function Users() {
-	const [users] = useState<IUser[]>(mockUsers as IUser[]);
+	const { getToken } = useAuth();
 	const [searchQuery, setSearchQuery] = useState("");
+
+	// Fetch all users
+	const {
+		data: users = [],
+		isLoading,
+		error
+	} = useQuery({
+		queryKey: ["users"],
+		queryFn: async () => {
+			const token = await getToken();
+			return getAllUsers(token);
+		}
+	});
 
 	// Filter users based on search
 	const filteredUsers = users.filter(
@@ -29,6 +42,28 @@ export default function Users() {
 		// TODO: Implement add user modal
 		console.log("Add user");
 	};
+
+	if (isLoading) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="flex items-center gap-2">
+					<Loader size={24} className="animate-spin" />
+					<span>Loading users...</span>
+				</div>
+			</div>
+		);
+	}
+
+	if (error) {
+		return (
+			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
+				<div className="text-center">
+					<h2 className="text-2xl font-bold mb-2">Error loading users</h2>
+					<p className="text-gray-400">{error.message}</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<SignedIn>

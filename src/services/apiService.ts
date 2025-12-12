@@ -1,4 +1,4 @@
-import type { IClass, IClassType, ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
+import type { IClass, IClassType, ICreateClassTypeDto, IUpdateClassTypeDto, IUser } from "@/interfaces";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -61,6 +61,16 @@ export async function getAllScheduledClasses(token?: string | null): Promise<Arr
 		headers: getAuthHeaders(token)
 	});
 	if (!response.ok) throw new Error("Failed to fetch scheduled classes");
+
+	return response.json();
+}
+
+// Users
+export async function getAllUsers(token?: string | null): Promise<Array<IUser>> {
+	const response = await fetch(`${API_BASE_URL}/users`, {
+		headers: getAuthHeaders(token)
+	});
+	if (!response.ok) throw new Error("Failed to fetch users");
 
 	return response.json();
 }
