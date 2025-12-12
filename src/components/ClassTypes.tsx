@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
-import ClassTypeAddModal from "./ClassTypeAddModal";
+import ClassTypeAddDialog from "./ClassTypeAddDialog";
 import ClassTypeCard from "./ClassTypeCard";
-import ClassTypeEditModal from "./ClassTypeEditModal";
+import ClassTypeEditDialog from "./ClassTypeEditDialog";
 import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
 import { SignedIn } from "@clerk/clerk-react";
@@ -122,14 +122,14 @@ export default function ClassTypes() {
 					))}
 				</div>
 
-				<ClassTypeAddModal
+				<ClassTypeAddDialog
 					isOpen={showAddModal}
 					onClose={() => setShowAddModal(false)}
 					onSubmit={handleAddSubmit}
 					isLoading={createMutation.isPending}
 				/>
 
-				<ClassTypeEditModal
+				<ClassTypeEditDialog
 					isOpen={editingId !== null}
 					classType={editingClassType}
 					onClose={() => setEditingId(null)}
