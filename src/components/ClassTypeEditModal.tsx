@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 
-interface ClassTypeEditModalProps {
+interface IClassTypeEditModalProps {
 	isOpen: boolean;
 	classType: IClassType | null;
 	onClose: () => void;
@@ -10,7 +10,7 @@ interface ClassTypeEditModalProps {
 	isLoading?: boolean;
 }
 
-export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmit, isLoading = false }: ClassTypeEditModalProps) {
+export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmit, isLoading = false }: IClassTypeEditModalProps) {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -29,6 +29,19 @@ export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmi
 		}
 	}, [classType]);
 
+	useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && isOpen) {
+				onClose();
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener("keydown", handleEscape);
+			return () => document.removeEventListener("keydown", handleEscape);
+		}
+	}, [isOpen, onClose]);
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		if (classType) {
@@ -36,10 +49,16 @@ export default function ClassTypeEditModal({ isOpen, classType, onClose, onSubmi
 		}
 	};
 
+	const handleBackdropClick = (e: React.MouseEvent) => {
+		if (e.target === e.currentTarget) {
+			onClose();
+		}
+	};
+
 	if (!isOpen || !classType) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+		<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" onClick={handleBackdropClick}>
 			<div className="bg-gray-800 rounded-lg p-6 w-full max-w-md border border-gray-700">
 				<h3 className="text-2xl font-bold mb-4">Edit Class Type</h3>
 

@@ -2,15 +2,15 @@ import { describe, expect, test, vi } from "vitest";
 import { render } from "@testing-library/react";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import App from "../src/components/App";
+import Schedule from "../src/components/Schedule";
 
 global.fetch = vi.fn();
 
 describe("App Tests", () => {
-	test("App component renders", () => {
+	test("Schedule component renders", () => {
 		vi.clearAllMocks();
 		(global.fetch as any).mockResolvedValue({
-			json: async () => []
+			json: async () => await []
 		});
 
 		const queryClient = new QueryClient();
@@ -18,7 +18,7 @@ describe("App Tests", () => {
 		const { container } = render(
 			<ClerkProvider publishableKey={process.env.VITE_CLERK_PUBLISHABLE_KEY || ""}>
 				<QueryClientProvider client={queryClient}>
-					<App />
+					<Schedule />
 				</QueryClientProvider>
 			</ClerkProvider>
 		);
