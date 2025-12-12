@@ -3,8 +3,8 @@ import type { IClassType } from "@/interfaces";
 
 interface IClassTypeCardProps {
 	classType: IClassType;
-	onEdit: (id: number) => void;
-	onDelete: (id: number) => void;
+	onEdit?: (id: number) => void;
+	onDelete?: (id: number) => void;
 }
 
 export default function ClassTypeCard({ classType, onEdit, onDelete }: IClassTypeCardProps) {
@@ -13,20 +13,24 @@ export default function ClassTypeCard({ classType, onEdit, onDelete }: IClassTyp
 			<div className="flex items-center justify-between mb-2">
 				<h3 className="text-2xl font-bold">{classType.title}</h3>
 				<div className="flex gap-2">
-					<button
-						onClick={() => onEdit(classType.id)}
-						className="text-amber-200 hover:text-amber-400 transition-colors"
-						aria-label="Edit class type"
-					>
-						<Edit2 size={20} />
-					</button>
-					<button
-						onClick={() => onDelete(classType.id)}
-						className="text-rose-200 hover:text-rose-400 transition-colors"
-						aria-label="Delete class type"
-					>
-						<Trash2 size={20} />
-					</button>
+					{onEdit && (
+						<button
+							onClick={() => onEdit(classType.id)}
+							className="text-amber-200 hover:text-amber-400 transition-colors"
+							aria-label="Edit class type"
+						>
+							<Edit2 size={20} />
+						</button>
+					)}
+					{onDelete && (
+						<button
+							onClick={() => onDelete(classType.id)}
+							className="text-rose-200 hover:text-rose-400 transition-colors"
+							aria-label="Delete class type"
+						>
+							<Trash2 size={20} />
+						</button>
+					)}
 				</div>
 			</div>
 

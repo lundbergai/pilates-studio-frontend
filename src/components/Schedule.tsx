@@ -6,9 +6,11 @@ import type { IClass, ICreateScheduledClassDto, IUpdateScheduledClassDto } from 
 import { getAllScheduledClasses, createScheduledClass, updateScheduledClass, deleteScheduledClass } from "@/services/apiService";
 import ScheduledClassCard from "./ScheduledClassCard";
 import ScheduleDialog from "./ScheduleDialog";
+import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Schedule() {
 	const { getToken } = useAuth();
+	const { canManage } = useUserRole();
 	const queryClient = useQueryClient();
 	const [showDialog, setShowDialog] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
@@ -144,13 +146,15 @@ export default function Schedule() {
 					<h1 className="text-5xl font-bold mb-2">Class Schedule</h1>
 					<h2 className="text-xl text-gray-400">View and manage weekly classes</h2>
 				</div>
-				<button
-					onClick={handleOpenAddDialog}
-					className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-				>
-					<Plus size={20} />
-					Schedule Class
-				</button>
+				{canManage && (
+					<button
+						onClick={handleOpenAddDialog}
+						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
+					>
+						<Plus size={20} />
+						Schedule Class
+					</button>
+				)}
 			</div>
 
 			<div className="space-y-8">
@@ -162,8 +166,8 @@ export default function Schedule() {
 								<ScheduledClassCard
 									key={classItem.id}
 									classData={classItem}
-									onEdit={handleOpenEditDialog}
-									onDelete={handleDelete}
+									onEdit={canManage ? handleOpenEditDialog : undefined}
+									onDelete={canManage ? handleDelete : undefined}
 								/>
 							))}
 						</div>
@@ -171,29 +175,31 @@ export default function Schedule() {
 				))}
 			</div>
 
-			<ScheduleDialog
-				isOpen={showDialog}
-				initialData={
-					editingClass
-						? {
-								classTypeId: editingClass.classTypeId,
-								instructorId: editingClass.instructorId,
-								startTime: editingClass.startTime
-							}
-						: null
-				}
-				title={editingId !== null ? "Edit Scheduled Class" : "Schedule New Class"}
-				submitLabel={editingId !== null ? "Save" : "Schedule"}
-				onClose={handleCloseDialog}
-				onSubmit={data => {
-					if (editingId !== null) {
-						handleEdit(data as IUpdateScheduledClassDto);
-					} else {
-						handleAdd(data as ICreateScheduledClassDto);
+			{canManage && (
+				<ScheduleDialog
+					isOpen={showDialog}
+					initialData={
+						editingClass
+							? {
+									classTypeId: editingClass.classTypeId,
+									instructorId: editingClass.instructorId,
+									startTime: editingClass.startTime
+								}
+							: null
 					}
-				}}
-				isLoading={createMutation.isPending || updateMutation.isPending}
-			/>
+					title={editingId !== null ? "Edit Scheduled Class" : "Schedule New Class"}
+					submitLabel={editingId !== null ? "Save" : "Schedule"}
+					onClose={handleCloseDialog}
+					onSubmit={data => {
+						if (editingId !== null) {
+							handleEdit(data as IUpdateScheduledClassDto);
+						} else {
+							handleAdd(data as ICreateScheduledClassDto);
+						}
+					}}
+					isLoading={createMutation.isPending || updateMutation.isPending}
+				/>
+			)}
 		</div>
 	);
 }
