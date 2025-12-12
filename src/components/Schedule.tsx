@@ -9,6 +9,7 @@ import ScheduledClassCard from "./ScheduledClassCard";
 export default function Schedule() {
 	const { getToken } = useAuth();
 	const [showScheduleModal, setShowScheduleModal] = useState(false);
+	console.log("Schedule modal open:", showScheduleModal);
 
 	// Fetch all scheduled classes with optional token
 	const {
