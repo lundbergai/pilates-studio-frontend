@@ -2,6 +2,7 @@ import { useState } from "react";
 import { SignedIn, useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader, Plus, Search } from "lucide-react";
+import type { IUser } from "@/interfaces";
 import { getAllUsers } from "@/services/apiService";
 import UsersTable from "./UsersTable";
 
@@ -11,7 +12,7 @@ export default function Users() {
 
 	// Fetch all users
 	const {
-		data: users = [],
+		data: fetchedUsers = [],
 		isLoading,
 		error
 	} = useQuery({
@@ -20,6 +21,27 @@ export default function Users() {
 			const token = await getToken();
 			return getAllUsers(token);
 		}
+	});
+
+	// Helper to get role priority for sorting
+	const getRolePriority = (user: IUser): number => {
+		if (user.isAdmin) return 0;
+		if (user.isInstructor) return 1;
+		if (user.isMember) return 2;
+		return 3; // unassigned
+	};
+
+	// Sort users by role (Admin > Instructor > Member > Unassigned), then by name
+	const users = [...fetchedUsers].sort((a, b) => {
+		const priorityA = getRolePriority(a);
+		const priorityB = getRolePriority(b);
+
+		if (priorityA !== priorityB) {
+			return priorityA - priorityB;
+		}
+
+		// If same role priority, sort by name alphabetically
+		return a.fullName.localeCompare(b.fullName);
 	});
 
 	// Filter users based on search

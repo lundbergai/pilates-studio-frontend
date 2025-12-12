@@ -22,7 +22,6 @@ export default function UserRow({ user, onEdit, onDelete }: IUserRowProps) {
 
 	return (
 		<tr className="border-b border-gray-700 hover:bg-gray-800 transition-colors">
-			<td className="px-6 py-4 text-white">{user.id}</td>
 			<td className="px-6 py-4 text-white">{user.fullName}</td>
 			<td className="px-6 py-4 text-gray-300">{user.email}</td>
 			<td className="px-6 py-4">
