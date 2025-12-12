@@ -4,13 +4,16 @@ import { Loader, Plus } from "lucide-react";
 import ClassTypeAddModal from "./ClassTypeAddModal";
 import ClassTypeCard from "./ClassTypeCard";
 import ClassTypeEditModal from "./ClassTypeEditModal";
-import type { IClassType } from "@/interfaces";
+import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
+import { SignedIn } from "@clerk/clerk-react";
+import { useAuth } from "@clerk/clerk-react";
 
 export default function ClassTypes() {
 	const queryClient = useQueryClient();
 	const [showAddModal, setShowAddModal] = useState(false);
 	const [editingId, setEditingId] = useState<number | null>(null);
+	const { getToken } = useAuth();
 
 	// Fetch all class types
 	const {
@@ -19,14 +22,20 @@ export default function ClassTypes() {
 		error
 	} = useQuery({
 		queryKey: ["classTypes"],
-		queryFn: getAllClassTypes
+		queryFn: async () => {
+			const token = await getToken();
+			return getAllClassTypes(token);
+		}
 	});
 
 	const editingClassType = classTypes.find(ct => ct.id === editingId) || null;
 
 	// Delete mutation
 	const deleteMutation = useMutation({
-		mutationFn: deleteClassType,
+		mutationFn: async (id: number) => {
+			const token = await getToken();
+			return deleteClassType(id, token);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
 		}
@@ -34,7 +43,10 @@ export default function ClassTypes() {
 
 	// Create mutation
 	const createMutation = useMutation({
-		mutationFn: createClassType,
+		mutationFn: async (data: ICreateClassTypeDto) => {
+			const token = await getToken();
+			return createClassType(data, token);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
 			setShowAddModal(false);
@@ -43,7 +55,10 @@ export default function ClassTypes() {
 
 	// Update mutation
 	const updateMutation = useMutation({
-		mutationFn: ({ id, data }: { id: number; data: Omit<IClassType, "id"> }) => updateClassType(id, data),
+		mutationFn: async ({ id, data }: { id: number; data: IUpdateClassTypeDto }) => {
+			const token = await getToken();
+			return updateClassType(id, data, token);
+		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["classTypes"] });
 			setEditingId(null);
@@ -54,11 +69,11 @@ export default function ClassTypes() {
 		deleteMutation.mutate(id);
 	};
 
-	const handleAddSubmit = (data: Omit<IClassType, "id">) => {
+	const handleAddSubmit = (data: ICreateClassTypeDto) => {
 		createMutation.mutate(data);
 	};
 
-	const handleEditSubmit = (id: number, data: Omit<IClassType, "id">) => {
+	const handleEditSubmit = (id: number, data: IUpdateClassTypeDto) => {
 		updateMutation.mutate({ id, data });
 	};
 
@@ -85,41 +100,43 @@ export default function ClassTypes() {
 	}
 
 	return (
-		<div className="min-h-screen bg-[#282c34] text-white p-8">
-			<div className="flex items-start justify-between mb-8">
-				<div>
-					<h1 className="text-5xl font-bold mb-2">Class Types</h1>
-					<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
+		<SignedIn>
+			<div className="min-h-screen bg-[#282c34] text-white p-8">
+				<div className="flex items-start justify-between mb-8">
+					<div>
+						<h1 className="text-5xl font-bold mb-2">Class Types</h1>
+						<h2 className="text-xl text-gray-400">Manage your studio's class offerings</h2>
+					</div>
+					<button
+						onClick={() => setShowAddModal(true)}
+						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
+					>
+						<Plus size={20} />
+						Add Class Type
+					</button>
 				</div>
-				<button
-					onClick={() => setShowAddModal(true)}
-					className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-				>
-					<Plus size={20} />
-					Add Class Type
-				</button>
+
+				<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+					{classTypes.map(classType => (
+						<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
+					))}
+				</div>
+
+				<ClassTypeAddModal
+					isOpen={showAddModal}
+					onClose={() => setShowAddModal(false)}
+					onSubmit={handleAddSubmit}
+					isLoading={createMutation.isPending}
+				/>
+
+				<ClassTypeEditModal
+					isOpen={editingId !== null}
+					classType={editingClassType}
+					onClose={() => setEditingId(null)}
+					onSubmit={handleEditSubmit}
+					isLoading={updateMutation.isPending}
+				/>
 			</div>
-
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-				{classTypes.map(classType => (
-					<ClassTypeCard key={classType.id} classType={classType} onEdit={setEditingId} onDelete={handleDelete} />
-				))}
-			</div>
-
-			<ClassTypeAddModal
-				isOpen={showAddModal}
-				onClose={() => setShowAddModal(false)}
-				onSubmit={handleAddSubmit}
-				isLoading={createMutation.isPending}
-			/>
-
-			<ClassTypeEditModal
-				isOpen={editingId !== null}
-				classType={editingClassType}
-				onClose={() => setEditingId(null)}
-				onSubmit={handleEditSubmit}
-				isLoading={updateMutation.isPending}
-			/>
-		</div>
+		</SignedIn>
 	);
 }

@@ -1,15 +1,15 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Loader } from "lucide-react";
 import type { IClassType } from "@/interfaces";
 
-interface ClassTypeAddModalProps {
+interface IClassTypeAddModalProps {
 	isOpen: boolean;
 	onClose: () => void;
 	onSubmit: (data: Omit<IClassType, "id">) => void;
 	isLoading?: boolean;
 }
 
-export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading = false }: ClassTypeAddModalProps) {
+export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading = false }: IClassTypeAddModalProps) {
 	const [formData, setFormData] = useState({
 		title: "",
 		description: "",
@@ -17,16 +17,35 @@ export default function ClassTypeAddModal({ isOpen, onClose, onSubmit, isLoading
 		capacity: 12
 	});
 
+	useEffect(() => {
+		const handleEscape = (e: KeyboardEvent) => {
+			if (e.key === "Escape" && isOpen) {
+				onClose();
+			}
+		};
+
+		if (isOpen) {
+			document.addEventListener("keydown", handleEscape);
+			return () => document.removeEventListener("keydown", handleEscape);
+		}
+	}, [isOpen, onClose]);
+
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		onSubmit(formData);
 		setFormData({ title: "", description: "", duration: 60, capacity: 12 });
 	};
 
+	const handleBackdropClick = (e: React.MouseEvent) => {
+		if (e.target === e.currentTarget) {
+			onClose();
+		}
+	};
+
 	if (!isOpen) return null;
 
 	return (
-		<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4">
+		<div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4" onClick={handleBackdropClick}>
 			<div className="bg-gray-800 rounded-lg p-6 w-full max-w-md border border-gray-700">
 				<h3 className="text-2xl font-bold mb-4">Add Class Type</h3>
 
