@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { SignedIn, useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader, Plus, Search } from "lucide-react";
+import { Loader, Search } from "lucide-react";
 import type { IUser } from "@/interfaces";
 import { getAllUsers } from "@/services/apiService";
 import UsersTable from "./UsersTable";
@@ -50,21 +50,6 @@ export default function Users() {
 			user.fullName.toLowerCase().includes(searchQuery.toLowerCase()) || user.email.toLowerCase().includes(searchQuery.toLowerCase())
 	);
 
-	const handleEdit = (id: number) => {
-		// TODO: Implement edit modal
-		console.log("Edit user:", id);
-	};
-
-	const handleDelete = (id: number) => {
-		// TODO: Implement delete logic
-		console.log("Delete user:", id);
-	};
-
-	const handleAddUser = () => {
-		// TODO: Implement add user modal
-		console.log("Add user");
-	};
-
 	if (isLoading) {
 		return (
 			<div className="min-h-screen bg-[#282c34] text-white p-8 flex items-center justify-center">
@@ -95,13 +80,6 @@ export default function Users() {
 						<h1 className="text-5xl font-bold mb-2">Users</h1>
 						<h2 className="text-xl text-gray-400">Manage studio members and staff</h2>
 					</div>
-					<button
-						onClick={handleAddUser}
-						className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap"
-					>
-						<Plus size={20} />
-						Add User
-					</button>
 				</div>
 
 				{/* Search */}
@@ -121,7 +99,7 @@ export default function Users() {
 				{/* Table */}
 				<div className="bg-gray-800 rounded-lg border border-gray-700 overflow-hidden">
 					{filteredUsers.length > 0 ? (
-						<UsersTable users={filteredUsers} onEdit={handleEdit} onDelete={handleDelete} />
+						<UsersTable users={filteredUsers} />
 					) : (
 						<div className="p-8 text-center">
 							<p className="text-gray-400">No users found matching your search.</p>
