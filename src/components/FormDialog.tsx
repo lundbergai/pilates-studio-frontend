@@ -36,6 +36,7 @@ export default function FormDialog({
 							<span className="sr-only">Close</span>
 						</Dialog.Close>
 					</div>
+					<Dialog.Description className="sr-only">{title} dialog</Dialog.Description>
 
 					{onSubmit ? (
 						<form onSubmit={onSubmit} className="space-y-4">
