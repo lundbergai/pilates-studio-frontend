@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
 import type { IClass } from "@/interfaces";
@@ -6,16 +7,20 @@ import { getAllScheduledClasses } from "@/services/apiService";
 import ScheduledClassCard from "./ScheduledClassCard";
 
 export default function Schedule() {
+	const { getToken } = useAuth();
 	const [showScheduleModal, setShowScheduleModal] = useState(false);
 
-	// Fetch all scheduled classes
+	// Fetch all scheduled classes with optional token
 	const {
 		data: classes = [],
 		isLoading,
 		error
 	} = useQuery({
 		queryKey: ["scheduledClasses"],
-		queryFn: getAllScheduledClasses
+		queryFn: async () => {
+			const token = await getToken();
+			return getAllScheduledClasses(token);
+		}
 	});
 
 	// Sort classes by start time
