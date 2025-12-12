@@ -1,17 +1,32 @@
 import { useEffect, useState } from "react";
-import type { IClassType, IUpdateClassTypeDto } from "@/interfaces";
+import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import FormDialog from "./FormDialog";
 
-interface IClassTypeEditDialogProps {
+interface IClassTypeDialogProps {
 	isOpen: boolean;
-	classType: IClassType | null;
+	initialData?: {
+		title: string;
+		description: string;
+		duration: number;
+		capacity: number;
+	} | null;
+	title: string;
+	submitLabel: string;
 	onClose: () => void;
-	onSubmit: (id: number, data: IUpdateClassTypeDto) => void;
+	onSubmit: (data: ICreateClassTypeDto | IUpdateClassTypeDto) => void;
 	isLoading?: boolean;
 }
 
-export default function ClassTypeEditDialog({ isOpen, classType, onClose, onSubmit, isLoading = false }: IClassTypeEditDialogProps) {
-	const [formData, setFormData] = useState<IUpdateClassTypeDto>({
+export default function ClassTypeDialog({
+	isOpen,
+	initialData,
+	title,
+	submitLabel,
+	onClose,
+	onSubmit,
+	isLoading = false
+}: IClassTypeDialogProps) {
+	const [formData, setFormData] = useState<ICreateClassTypeDto | IUpdateClassTypeDto>({
 		title: "",
 		description: "",
 		duration: 60,
@@ -19,32 +34,32 @@ export default function ClassTypeEditDialog({ isOpen, classType, onClose, onSubm
 	});
 
 	useEffect(() => {
-		if (classType) {
+		if (initialData) {
+			setFormData(initialData);
+		} else {
 			setFormData({
-				title: classType.title,
-				description: classType.description,
-				duration: classType.duration,
-				capacity: classType.capacity
+				title: "",
+				description: "",
+				duration: 60,
+				capacity: 12
 			});
 		}
-	}, [classType, isOpen]);
+	}, [initialData, isOpen]);
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
-		if (classType) {
-			onSubmit(classType.id, formData);
-		}
+		onSubmit(formData);
 	};
 
 	return (
 		<FormDialog
 			isOpen={isOpen}
 			onOpenChange={onClose}
-			title="Edit Class Type"
+			title={title}
 			onSubmit={handleSubmit}
 			onCancel={onClose}
 			isLoading={isLoading}
-			submitLabel="Save"
+			submitLabel={submitLabel}
 		>
 			<div className="space-y-4">
 				<div>
@@ -67,7 +82,6 @@ export default function ClassTypeEditDialog({ isOpen, classType, onClose, onSubm
 						onChange={e => setFormData({ ...formData, description: e.target.value })}
 						className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-600 transition-colors resize-none"
 						rows={3}
-						required
 						disabled={isLoading}
 					/>
 				</div>

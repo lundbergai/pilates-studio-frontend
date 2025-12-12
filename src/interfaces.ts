@@ -8,7 +8,7 @@ export interface IClassType {
 
 export interface ICreateClassTypeDto {
 	title: string;
-	description: string;
+	description?: string;
 	duration: number;
 	capacity: number;
 }
