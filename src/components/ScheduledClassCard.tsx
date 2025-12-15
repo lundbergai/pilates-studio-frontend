@@ -1,5 +1,11 @@
 import { Clock, Edit2, MapPin, Trash2, User } from "lucide-react";
 import type { IClass } from "@/interfaces";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { bookClass, cancelBooking, getUserBookings } from "@/services/apiService";
+import { useAuth } from "@clerk/clerk-react";
+import { useUser } from "@clerk/clerk-react";
+import { useState } from "react";
 
 interface IClassCardProps {
 	classData: IClass;
@@ -8,9 +14,66 @@ interface IClassCardProps {
 }
 
 export default function ClassCard({ classData, onEdit, onDelete }: IClassCardProps) {
+	const { isMember } = useUserRole();
+	const { getToken } = useAuth();
+	const { user } = useUser();
+	const queryClient = useQueryClient();
+	const [optimisticBooked, setOptimisticBooked] = useState(false);
+
 	const startDate = new Date(classData.startTime);
 	const endDate = new Date(startDate.getTime() + classData.classTypeDuration * 60000);
 	const availableSpots = classData.classTypeCapacity - classData.bookedSpots;
+	const isFull = availableSpots === 0;
+
+	// Check if user has booked this class
+	const { data: userBookings = [] } = useQuery({
+		queryKey: ["userBookings", user?.id],
+		queryFn: async () => {
+			const token = await getToken();
+			return getUserBookings(token);
+		},
+		enabled: isMember && !!user
+	});
+
+	const isBooked = optimisticBooked || userBookings.some(booking => booking.scheduledClassId === classData.id);
+	const bookingId = userBookings.find(booking => booking.scheduledClassId === classData.id)?.id;
+
+	// Book class mutation with optimistic update
+	const bookMutation = useMutation({
+		mutationFn: async () => {
+			const token = await getToken();
+			return bookClass(classData.id, token);
+		},
+		onMutate: () => {
+			setOptimisticBooked(true);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+		},
+		onError: () => {
+			setOptimisticBooked(false);
+		}
+	});
+
+	// Cancel booking mutation with optimistic update
+	const cancelMutation = useMutation({
+		mutationFn: async () => {
+			if (!bookingId) return;
+			const token = await getToken();
+			return cancelBooking(bookingId, token);
+		},
+		onMutate: () => {
+			setOptimisticBooked(false);
+		},
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+		},
+		onError: () => {
+			setOptimisticBooked(true);
+		}
+	});
+
+	const isLoading = bookMutation.isPending || cancelMutation.isPending;
 
 	const formatTime = (date: Date) => {
 		return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit", hour12: false });
@@ -34,6 +97,7 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 								onClick={() => onEdit(classData.id)}
 								className="text-amber-200 hover:text-amber-400 transition-colors"
 								aria-label="Edit class"
+								disabled={isLoading}
 							>
 								<Edit2 size={20} />
 							</button>
@@ -43,6 +107,7 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 								onClick={() => onDelete(classData.id)}
 								className="text-rose-200 hover:text-rose-400 transition-colors"
 								aria-label="Delete class"
+								disabled={isLoading}
 							>
 								<Trash2 size={20} />
 							</button>
@@ -70,12 +135,28 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 				</div>
 			</div>
 
-			<div className="w-full bg-gray-700 rounded-full h-2">
+			<div className="w-full bg-gray-700 rounded-full h-2 mb-4">
 				<div
 					className="bg-cyan-600 h-2 rounded-full"
 					style={{ width: `${(classData.bookedSpots / classData.classTypeCapacity) * 100}%` }}
 				/>
 			</div>
+
+			{isMember && (
+				<button
+					onClick={() => (isBooked ? cancelMutation.mutate() : bookMutation.mutate())}
+					disabled={(!isBooked && isFull) || isLoading}
+					className={`w-full py-2 rounded-lg font-semibold transition-colors ${
+						isBooked
+							? "bg-rose-600 hover:bg-rose-700 text-white disabled:bg-rose-600 disabled:opacity-75"
+							: isFull
+								? "bg-gray-700 text-gray-500 cursor-not-allowed"
+								: "bg-green-600 hover:bg-green-700 text-white disabled:bg-green-600 disabled:opacity-75"
+					}`}
+				>
+					{isBooked ? "Unbook" : "Book Spot"}
+				</button>
+			)}
 		</div>
 	);
 }

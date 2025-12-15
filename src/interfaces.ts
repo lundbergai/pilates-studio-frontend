@@ -59,3 +59,11 @@ export interface IUser {
 	isInstructor: boolean;
 	isMember: boolean;
 }
+
+export interface IClassBooking {
+	id: number;
+	userId: number;
+	scheduledClassId: number;
+	bookedAt: string;
+	scheduledClass?: IClass;
+}
