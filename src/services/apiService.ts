@@ -1,11 +1,12 @@
 import type {
 	IClass,
+	IClassBooking,
 	IClassType,
 	ICreateClassTypeDto,
-	IUpdateClassTypeDto,
 	ICreateScheduledClassDto,
-	IUpdateScheduledClassDto,
 	IInstructor,
+	IUpdateClassTypeDto,
+	IUpdateScheduledClassDto,
 	IUser
 } from "@/interfaces";
 
@@ -120,6 +121,35 @@ export async function getAllUsers(token?: string | null): Promise<Array<IUser>> 
 		headers: getAuthHeaders(token)
 	});
 	if (!response.ok) throw new Error("Failed to fetch users");
+
+	return response.json();
+}
+
+// Bookings
+export async function bookClass(scheduledClassId: number, token?: string | null): Promise<IClassBooking> {
+	const response = await fetch(`${API_BASE_URL}/bookings`, {
+		method: "POST",
+		headers: getAuthHeaders(token),
+		body: JSON.stringify({ scheduledClassId })
+	});
+	if (!response.ok) throw new Error("Failed to book class");
+
+	return response.json();
+}
+
+export async function cancelBooking(bookingId: number, token?: string | null): Promise<void> {
+	const response = await fetch(`${API_BASE_URL}/bookings/${bookingId}`, {
+		method: "DELETE",
+		headers: getAuthHeaders(token)
+	});
+	if (!response.ok) throw new Error("Failed to cancel booking");
+}
+
+export async function getUserBookings(token?: string | null): Promise<Array<IClassBooking>> {
+	const response = await fetch(`${API_BASE_URL}/bookings/me`, {
+		headers: getAuthHeaders(token)
+	});
+	if (!response.ok) throw new Error("Failed to fetch bookings");
 
 	return response.json();
 }
