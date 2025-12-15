@@ -1,12 +1,11 @@
 import { useState } from "react";
+import { SignedIn, useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
 import ClassTypeDialog from "./ClassTypeDialog";
 import ClassTypeCard from "./ClassTypeCard";
 import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import { createClassType, deleteClassType, getAllClassTypes, updateClassType } from "@/services/apiService";
-import { SignedIn } from "@clerk/clerk-react";
-import { useAuth } from "@clerk/clerk-react";
 import { useUserRole } from "@/hooks/useUserRole";
 
 export default function ClassTypes() {

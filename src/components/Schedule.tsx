@@ -2,10 +2,10 @@ import { useState } from "react";
 import { useAuth } from "@clerk/clerk-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader, Plus } from "lucide-react";
-import type { IClass, ICreateScheduledClassDto, IUpdateScheduledClassDto } from "@/interfaces";
-import { getAllScheduledClasses, createScheduledClass, updateScheduledClass, deleteScheduledClass } from "@/services/apiService";
 import ScheduledClassCard from "./ScheduledClassCard";
 import ScheduleDialog from "./ScheduleDialog";
+import type { IClass, ICreateScheduledClassDto, IUpdateScheduledClassDto } from "@/interfaces";
+import { createScheduledClass, deleteScheduledClass, getAllScheduledClasses, updateScheduledClass } from "@/services/apiService";
 import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Schedule() {
@@ -70,7 +70,7 @@ export default function Schedule() {
 	const sortedClasses = [...classes].sort((a, b) => new Date(a.startTime).getTime() - new Date(b.startTime).getTime());
 
 	// Group classes by date
-	const classesGroupedByDate: Record<string, IClass[]> = {};
+	const classesGroupedByDate: Record<string, Array<IClass>> = {};
 	sortedClasses.forEach(classItem => {
 		const date = new Date(classItem.startTime).toLocaleDateString("en-US", {
 			weekday: "long",
@@ -78,10 +78,7 @@ export default function Schedule() {
 			day: "numeric"
 		});
 
-		if (!classesGroupedByDate[date]) {
-			classesGroupedByDate[date] = [];
-		}
-
+		classesGroupedByDate[date] ??= [];
 		classesGroupedByDate[date].push(classItem);
 	});
 

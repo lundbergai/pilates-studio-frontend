@@ -1,13 +1,13 @@
 import type {
 	IClass,
+	IClassBooking,
 	IClassType,
 	ICreateClassTypeDto,
-	IUpdateClassTypeDto,
 	ICreateScheduledClassDto,
-	IUpdateScheduledClassDto,
 	IInstructor,
-	IUser,
-	IClassBooking
+	IUpdateClassTypeDto,
+	IUpdateScheduledClassDto,
+	IUser
 } from "@/interfaces";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;

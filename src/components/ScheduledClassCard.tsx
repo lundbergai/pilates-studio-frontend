@@ -1,11 +1,10 @@
+import { useState } from "react";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Clock, Edit2, MapPin, Trash2, User } from "lucide-react";
 import type { IClass } from "@/interfaces";
-import { useUserRole } from "@/hooks/useUserRole";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { bookClass, cancelBooking, getUserBookings } from "@/services/apiService";
-import { useAuth } from "@clerk/clerk-react";
-import { useUser } from "@clerk/clerk-react";
-import { useState } from "react";
+import { useUserRole } from "@/hooks/useUserRole";
 
 interface IClassCardProps {
 	classData: IClass;

@@ -2,9 +2,9 @@ import { useState } from "react";
 import { SignedIn, useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader, Search } from "lucide-react";
+import UsersTable from "./UsersTable";
 import type { IUser } from "@/interfaces";
 import { getAllUsers } from "@/services/apiService";
-import UsersTable from "./UsersTable";
 import { useUserRole } from "@/hooks/useUserRole";
 
 export default function Users() {

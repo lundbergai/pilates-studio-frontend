@@ -1,8 +1,8 @@
-import type { IUser } from "@/interfaces";
 import UserRow from "./UserRow";
+import type { IUser } from "@/interfaces";
 
 interface IUsersTableProps {
-	users: IUser[];
+	users: Array<IUser>;
 }
 
 export default function UsersTable({ users }: IUsersTableProps) {

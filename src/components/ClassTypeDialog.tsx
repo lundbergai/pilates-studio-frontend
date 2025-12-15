@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 import FormDialog from "./FormDialog";
+import type { ICreateClassTypeDto, IUpdateClassTypeDto } from "@/interfaces";
 
 interface IClassTypeDialogProps {
 	isOpen: boolean;
