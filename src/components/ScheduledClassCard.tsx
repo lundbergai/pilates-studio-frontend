@@ -48,6 +48,7 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+			queryClient.invalidateQueries({ queryKey: ["scheduledClasses"] });
 		},
 		onError: () => {
 			setOptimisticBooked(false);
@@ -66,6 +67,7 @@ export default function ClassCard({ classData, onEdit, onDelete }: IClassCardPro
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ["userBookings"] });
+			queryClient.invalidateQueries({ queryKey: ["scheduledClasses"] });
 		},
 		onError: () => {
 			setOptimisticBooked(true);
