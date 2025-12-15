@@ -6,11 +6,11 @@ interface IUserRowProps {
 
 export default function UserRow({ user }: IUserRowProps) {
 	// Get array of roles for this user
-	const getRoles = (user: IUser): string[] => {
-		const roles: string[] = [];
-		if (user.isAdmin) roles.push("Admin");
-		if (user.isInstructor) roles.push("Instructor");
-		if (user.isMember) roles.push("Member");
+	const getRoles = (userData: IUser): Array<string> => {
+		const roles: Array<string> = [];
+		if (userData.isAdmin) roles.push("Admin");
+		if (userData.isInstructor) roles.push("Instructor");
+		if (userData.isMember) roles.push("Member");
 		return roles;
 	};
 

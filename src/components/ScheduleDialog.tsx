@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/clerk-react";
 import { useQuery } from "@tanstack/react-query";
+import FormDialog from "./FormDialog";
 import type { ICreateScheduledClassDto, IUpdateScheduledClassDto } from "@/interfaces";
 import { getAllClassTypes, getInstructors } from "@/services/apiService";
-import FormDialog from "./FormDialog";
-import { useAuth } from "@clerk/clerk-react";
 
 interface IScheduleDialogProps {
 	isOpen: boolean;

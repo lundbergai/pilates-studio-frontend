@@ -1,5 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import { X, Loader } from "lucide-react";
+import { Loader, X } from "lucide-react";
 
 interface IFormDialogProps {
 	isOpen: boolean;
